@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From My Broken Heart 💔</title>
+
+<style>
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{
+  margin:0;height:100vh;
+  background:linear-gradient(180deg,#080003,#000);
+  color:#eee;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.card{
+  width:90%;max-width:420px;
+  background:rgba(255,255,255,0.05);
+  border-radius:24px;
+  padding:26px;
+  box-shadow:0 0 30px rgba(255,0,80,0.15);
+}
+.question{margin-bottom:16px;font-size:17px;color:#ffd6de}
+textarea{
+  width:100%;min-height:90px;
+  border-radius:14px;border:none;
+  padding:12px;font-size:15px;
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+}
+.range-wrap{text-align:center}
+input[type=range]{width:100%;margin-top:15px}
+.percent{margin-top:12px;font-size:22px;color:#ffb3c6}
+button{
+  margin-top:22px;
+  padding:13px 28px;
+  border:none;border-radius:28px;
+  background:#ff5c8a;color:#fff;
+  font-size:15px;
+}
+#final{display:none;text-align:center}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="app">
+  <div id="questionBox">
+    <div class="question" id="question"></div>
+    <textarea id="textAnswer"></textarea>
+
+    <div id="rangeBox" class="range-wrap" style="display:none">
+      <input type="range" min="0" max="100" value="50" oninput="percent.innerText=this.value+'%'">
+      <div class="percent" id="percent">50%</div>
+    </div>
+
+    <button type="button" onclick="next()">Next</button>
+  </div>
+
+  <div id="final">
+    <p style="color:#ffb3c6;font-size:16px;line-height:1.6">
+      Tumne sab jawab de diye…<br>
+      Thank you dil se jawab dene ke liye 😔
+    </p>
+    <button type="button" onclick="sendWhatsApp()">Send to WhatsApp</button>
+  </div>
+</div>
+
+<script>
+const questions=[
+  {type:"text",q:"Kya tum mujhe sach mai pyar nhi karti?"},
+  {type:"text",q:"Agar nhi karti to reason clearly likho"},
+  {type:"text",q:"Kya mere sudharne se tum sath rahogi?"},
+  {type:"text",q:"Mai kya karke tumhara biswas jeet sakta hu?"},
+  {type:"text",q:"Abhi dost bola par future ka chance hai?"},
+
+  {type:"range",q:"Mere upar abhi tumhara pyar kitna hai?"},
+  {type:"range",q:"Dobara hurt na karu to sath rehne ka chance?"},
+  {type:"range",q:"Tumhari har baat maanu to pyar ka chance?"}
+];
+
+let step=0;
+let answers=[];
+
+const qEl=document.getElementById("question");
+const tEl=document.getElementById("textAnswer");
+const rEl=document.getElementById("rangeBox");
+const app=document.getElementById("questionBox");
+const final=document.getElementById("final");
+
+show();
+
+function show(){
+  const q=questions[step];
+  qEl.innerText=q.q;
+
+  if(q.type==="text"){
+    tEl.style.display="block";
+    rEl.style.display="none";
+    tEl.value="";
+  }else{
+    tEl.style.display="none";
+    rEl.style.display="block";
+    percent.innerText="50%";
+    rEl.querySelector("input").value=50;
+  }
+}
+
+function next(){
+  const q=questions[step];
+
+  if(q.type==="text"){
+    if(!tEl.value.trim()){alert("Please likho 😔");return;}
+    answers.push(tEl.value.trim());
+  }else{
+    answers.push(rEl.querySelector("input").value+"%");
+  }
+
+  step++;
+
+  if(step === questions.length){
+    app.style.display="none";
+    final.style.display="block";
+    return;
+  }
+
+  show();
+}
+
+function sendWhatsApp(){
+  let msg="💔 Dil Se Jawab 💔\n\n";
+  questions.forEach((q,i)=>{
+    msg+=`Q${i+1}: ${q.q}\nAns: ${answers[i]}\n\n`;
+  });
+  window.location.href="https://wa.me/917337013972?text="+encodeURIComponent(msg);
+}
+</script>
+
+</body>
+</html>
