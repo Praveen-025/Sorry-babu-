@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From a Broken Heart 💔</title>
+
+<style>
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{
+  margin:0;height:100vh;
+  background:linear-gradient(180deg,#0a0005,#000);
+  color:#eee;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.heart{
+  position:absolute;
+  font-size:16px;
+  opacity:0.22;
+  animation:float 20s linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(120vh)}
+  to{transform:translateY(-20vh)}
+}
+
+/* LETTER */
+#letter{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.95);
+  display:flex;align-items:center;justify-content:center;
+  z-index:10;
+}
+.letter-box{
+  background:linear-gradient(160deg,#1a000d,#000);
+  padding:28px;border-radius:22px;
+  max-width:90%;text-align:center;
+  animation:fade 3s ease;
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.letter-box h2{color:#ff9db2}
+.letter-box p{font-size:14px;line-height:1.7}
+.letter-box button{
+  margin-top:20px;
+  padding:12px 34px;
+  border:none;border-radius:30px;
+  background:#ff5c8a;color:#fff;
+}
+
+/* APP */
+#app{display:none;width:100%;max-width:420px;padding:20px}
+.card{
+  background:rgba(255,255,255,.05);
+  border-radius:24px;
+  padding:26px;
+  box-shadow:0 0 35px rgba(255,0,80,.12);
+}
+.question{margin-bottom:18px;font-size:17px;color:#ffd6de}
+
+textarea{
+  width:100%;min-height:95px;
+  border-radius:16px;border:none;
+  padding:12px;font-size:15px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+}
+.range-wrap{text-align:center}
+input[type=range]{width:100%;margin-top:15px}
+.percent{margin-top:14px;font-size:22px;color:#ffb3c6}
+
+button{
+  margin-top:22px;
+  padding:13px 28px;
+  border:none;border-radius:28px;
+  background:#ff5c8a;color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<script>
+for(let i=0;i<12;i++){
+  let h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💔";
+  h.style.left=Math.random()*100+"%";
+  h.style.animationDuration=18+Math.random()*10+"s";
+  document.body.appendChild(h);
+}
+</script>
+
+<!-- LETTER -->
+<div id="letter">
+  <div class="letter-box">
+    <h2>💔 Ek Aakhri Request</h2>
+    <p>Please dil se jawab dena…<br>Ye mere liye bahut important hai</p>
+    <button onclick="start()">Start</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="card">
+    <div class="question" id="question"></div>
+
+    <textarea id="textAnswer" placeholder="Yahan likho..."></textarea>
+
+    <div id="rangeBox" class="range-wrap" style="display:none">
+      <input type="range" min="0" max="100" value="50" oninput="updatePercent(this.value)">
+      <div class="percent" id="percent">50%</div>
+    </div>
+
+    <button onclick="next()">Next</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  { type:"text", q:"Kya tum mujhe sach mai pyar nhi karti?" },
+  { type:"text", q:"Agar pyar nahi karti to uska reason clearly likho" },
+  { type:"text", q:"Kya mere acche se rehne se tum mere sath rahogi?" },
+  { type:"text", q:"Mai kya karke tumhara biswas phirse jeet sakta hu?" },
+  { type:"text", q:"Abhi mujhe dost bola par kya future ka koi chance hai?" },
+
+  { type:"range", q:"Mere upar abhi tumhara pyar kitna bacha hai?" },
+  { type:"range", q:"Agar mai tumhe dobara hurt na karu to sath rehne ka chance?" },
+  { type:"range", q:"Agar mai tumhari har baat maan lu to pyar ka chance?" }
+];
+
+let step = 0;
+let answers = [];
+
+function start(){
+  letter.style.display="none";
+  app.style.display="block";
+  show();
+}
+
+function show(){
+  const q = questions[step];
+  question.innerText = q.q;
+
+  if(q.type==="text"){
+    textAnswer.style.display="block";
+    rangeBox.style.display="none";
+    textAnswer.value="";
+  }else{
+    textAnswer.style.display="none";
+    rangeBox.style.display="block";
+    updatePercent(50);
+  }
+}
+
+function updatePercent(v){
+  percent.innerText = v + "%";
+}
+
+function next(){
+  const q = questions[step];
+
+  if(q.type==="text"){
+    const val = textAnswer.value.trim();
+    if(!val){ alert("Please kuch likho… 😔"); return; }
+    answers.push(val);
+  }else{
+    answers.push(document.querySelector("#rangeBox input").value + "%");
+  }
+
+  if(step === questions.length - 1){
+    sendWhatsApp(); // ✅ ONLY HERE
+    return;
+  }
+
+  step++;
+  show();
+}
+
+function sendWhatsApp(){
+  let msg="💔 Dil Se Jawab 💔\n\n";
+  questions.forEach((q,i)=>{
+    msg += `Q${i+1}: ${q.q}\nAns: ${answers[i]}\n\n`;
+  });
+  window.location.href =
+    "https://wa.me/917337013972?text=" + encodeURIComponent(msg);
+}
+</script>
+
+</body>
+</html>
