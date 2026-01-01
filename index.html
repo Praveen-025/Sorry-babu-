@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From a Broken Heart 💔</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:'Segoe UI',sans-serif;
+}
+body{
+  margin:0;
+  height:100vh;
+  background:linear-gradient(180deg,#0a0005,#000);
+  color:#eee;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+/* VERY SLOW HEARTS (LIKE TEARS) */
+.heart{
+  position:absolute;
+  font-size:16px;
+  opacity:0.22;
+  animation:float 18s linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(120vh);}
+  to{transform:translateY(-20vh);}
+}
+
+/* LETTER POPUP */
+#letter{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.95);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+}
+.letter-box{
+  background:linear-gradient(160deg,#1a000d,#000);
+  padding:28px;
+  border-radius:22px;
+  max-width:90%;
+  text-align:center;
+  animation:fadeSlow 3s ease;
+}
+.letter-box h2{
+  color:#ff9db2;
+  font-weight:500;
+}
+.letter-box p{
+  font-size:14px;
+  opacity:0.85;
+  line-height:1.7;
+}
+.letter-box button{
+  margin-top:20px;
+  padding:12px 34px;
+  border:none;
+  border-radius:30px;
+  background:#ff5c8a;
+  color:#fff;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(255,92,138,0.35);
+}
+
+/* APP */
+#app{
+  display:none;
+  width:100%;
+  max-width:420px;
+  padding:20px;
+}
+.card{
+  background:rgba(255,255,255,0.05);
+  border-radius:24px;
+  padding:26px;
+  box-shadow:0 0 35px rgba(255,0,80,0.12);
+  animation:fadeSlow 2.5s ease;
+}
+@keyframes fadeSlow{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+.question{
+  margin-bottom:18px;
+  font-size:17px;
+  line-height:1.6;
+  color:#ffd6de;
+}
+
+/* TEXT ANSWER */
+textarea{
+  width:100%;
+  min-height:95px;
+  border-radius:16px;
+  border:none;
+  padding:12px;
+  font-size:15px;
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  outline:none;
+}
+
+/* RANGE ANSWER */
+.range-wrap{
+  text-align:center;
+}
+input[type=range]{
+  width:100%;
+  margin-top:15px;
+}
+.percent{
+  margin-top:14px;
+  font-size:22px;
+  color:#ffb3c6;
+}
+
+/* BUTTON */
+button{
+  margin-top:22px;
+  padding:13px 28px;
+  border:none;
+  border-radius:28px;
+  background:#ff5c8a;
+  color:#fff;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(255,92,138,0.35);
+}
+button:active{
+  transform:scale(0.97);
+}
+</style>
+</head>
+
+<body>
+
+<script>
+for(let i=0;i<12;i++){
+  let h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💔";
+  h.style.left=Math.random()*100+"%";
+  h.style.animationDuration=16+Math.random()*10+"s";
+  document.body.appendChild(h);
+}
+</script>
+
+<!-- LETTER -->
+<div id="letter">
+  <div class="letter-box">
+    <h2>💔 Ek Aakhri Request</h2>
+    <p>
+      Please dil se jawab dena…<br>
+      Jaldi nahi, gusse mein nahi 😔<br><br>
+      Ye sawal mere liye bahut gehre hai
+    </p>
+    <button onclick="start()">Start</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="card">
+    <div class="question" id="question"></div>
+
+    <textarea id="textAnswer" placeholder="Yahan likho..."></textarea>
+
+    <div id="rangeBox" class="range-wrap" style="display:none">
+      <input type="range" min="0" max="100" value="50" oninput="updatePercent(this.value)">
+      <div class="percent" id="percent">50%</div>
+    </div>
+
+    <button onclick="next()">Next</button>
+  </div>
+</div>
+
+<script>
+const textQuestions=[
+"Kya tum mujhe sach mai pyar nhi karti?",
+"Agar pyar nahi karti to please uska reason clearly likho",
+"Kya mere acche se rehne se tum mere sath rahogi?",
+"Mere upar tumhara biswas phirse lane ke liye mai kya karu?",
+"Abhi mujhe dost bola par kya future ka koi chance hai?"
+];
+
+const rangeQuestions=[
+"Mere upar abhi tumhara pyar kitna bacha hai?",
+"Agar mai tumhe dobara hurt na karu to phirse sath rehne ka chance?",
+"Tum chahti ho to mai bilkul tumhari sharton pe rahu, tab pyar ka chance?"
+];
+
+let step=0;
+let answers=[];
+
+function start(){
+  document.getElementById("letter").style.display="none";
+  document.getElementById("app").style.display="block";
+  show();
+}
+
+function show(){
+  const qEl=document.getElementById("question");
+  const tEl=document.getElementById("textAnswer");
+  const rEl=document.getElementById("rangeBox");
+
+  if(step < textQuestions.length){
+    qEl.innerText=textQuestions[step];
+    tEl.style.display="block";
+    rEl.style.display="none";
+    tEl.value="";
+  }else{
+    const rIndex=step-textQuestions.length;
+    qEl.innerText=rangeQuestions[rIndex];
+    tEl.style.display="none";
+    rEl.style.display="block";
+    updatePercent(50);
+  }
+}
+
+function updatePercent(v){
+  document.getElementById("percent").innerText=v+"%";
+  document.querySelector("#rangeBox input").value=v;
+}
+
+function next(){
+  if(step < textQuestions.length){
+    const val=document.getElementById("textAnswer").value.trim();
+    if(!val){
+      alert("Please kuch likho… 😔");
+      return;
+    }
+    answers.push(val);
+  }else{
+    answers.push(document.querySelector("#rangeBox input").value+"%");
+  }
+
+  step++;
+
+  if(step < textQuestions.length + rangeQuestions.length){
+    show();
+  }else{
+    sendWhatsApp(); // ONLY AFTER 8TH QUESTION
+  }
+}
+
+function sendWhatsApp(){
+  let msg="💔 Dil Se Jawab 💔\n\n";
+
+  textQuestions.forEach((q,i)=>{
+    msg+=`Q${i+1}: ${q}\nAns: ${answers[i]}\n\n`;
+  });
+
+  rangeQuestions.forEach((q,i)=>{
+    msg+=`Q${i+6}: ${q}\nAns: ${answers[i+5]}\n\n`;
+  });
+
+  const url="https://wa.me/917337013972?text="+encodeURIComponent(msg);
+  window.location.href=url;
+}
+</script>
+
+</body>
+</html>
